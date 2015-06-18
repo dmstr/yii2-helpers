@@ -1,0 +1,21 @@
+{
+    "name": "dmstr/yii2-helpers",
+    "description": "Yii2 Helpers",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Sergej Kunz",
+            "email": "s.kunz@herzogkommunikation.de"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "dmstr\\helpers\\": ""
+        }
+    }
+}
