@@ -32,32 +32,53 @@ class RouteAccess {
 			$route = static::normalizeRoute($route[0]);
 		}
 
-		if (!isset(static::$_accessCache[$route])) {
-			self::$_accessCache[$route] = false;
+		$key = $route;
+		if (isset($callback)) {
+			$key .= spl_object_hash($callback);
+		}
+
+		if (isset($failCallback)) {
+			$key .= spl_object_hash($failCallback);
+		}
+
+		if (!isset(static::$_accessCache[$key])) {
+			self::$_accessCache[$key] = false;
 			$parts = \Yii::$app->createController($route);
 			if ($parts) {
 				/**
 				 * @var $controller Controller
 				 */
 				list($controller, $actionID) = $parts;
+				if (!$actionID) {
+					$actionID = 'index';
+				}
 
+				$tmpLoginUrl = Yii::$app->user->loginUrl;
+				Yii::$app->user->loginUrl = null;
 				try {
+					$modules = $controller->getModules();
+					if ($modules && !$modules[count($modules) - 1]->beforeAction(new Action($actionID, $controller))) {
+						throw new \Exception('not valid');
+					}
+
 					if ($controller->beforeAction(new Action($actionID, $controller))) {
 						if (isset($callback)) {
-							self::$_accessCache[$route] = $callback();
+							self::$_accessCache[$key] = $callback();
 						} else {
-							self::$_accessCache[$route] = true;
+							self::$_accessCache[$key] = true;
 						}
 					}
 				} catch (\Exception $e) {
 					if (isset($failCallback)) {
-						self::$_accessCache[$route] = $failCallback();
+						self::$_accessCache[$key] = $failCallback();
 					}
 				}
+
+				Yii::$app->user->loginUrl = $tmpLoginUrl;
 			}
 		}
 
-		return self::$_accessCache[$route];
+		return self::$_accessCache[$key];
 	}
 
 	/**
