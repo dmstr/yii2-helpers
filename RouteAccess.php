@@ -29,10 +29,12 @@ class RouteAccess {
 	{
 		if (is_array($route)) {
 			$route = (array) $route;
+			$key = implode(';', $route);
 			$route = static::normalizeRoute($route[0]);
+		} else {
+			$key = $route;
 		}
 
-		$key = $route;
 		if (isset($callback)) {
 			$key .= spl_object_hash($callback);
 		}
