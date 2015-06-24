@@ -29,7 +29,7 @@ class RouteAccess {
 	{
 		if (is_array($route)) {
 			$route = (array) $route;
-			$key = implode(';', $route);
+			$key = json_encode($route);
 			$route = static::normalizeRoute($route[0]);
 		} else {
 			$key = $route;
