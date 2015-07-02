@@ -29,6 +29,9 @@ class Html extends \yii\helpers\Html
 	{
 		return RouteAccess::can($url, function() use ($text, $url, $options) {
 			return parent::a($text, $url, $options);
-		}, function() { return null; });
+		}, function() { return null; }, [
+			$text,
+			$options
+		]);
 	}
 }

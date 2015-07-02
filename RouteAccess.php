@@ -25,7 +25,7 @@ class RouteAccess {
 	 * @param callable $callback
 	 * @return null|mixed
 	 */
-	public static function can($route, \Closure $callback = null, \Closure $failCallback = null)
+	public static function can($route, \Closure $callback = null, \Closure $failCallback = null, $attributes = [])
 	{
 		if (is_array($route)) {
 			$route = (array) $route;
@@ -42,6 +42,9 @@ class RouteAccess {
 		if (isset($failCallback)) {
 			$key .= spl_object_hash($failCallback);
 		}
+
+		$key .= json_encode($attributes);
+		$key = md5($key);
 
 		if (!isset(static::$_accessCache[$key])) {
 			self::$_accessCache[$key] = false;
