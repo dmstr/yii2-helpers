@@ -8,6 +8,10 @@
         {
             "name": "Sergej Kunz",
             "email": "s.kunz@herzogkommunikation.de"
+        },
+        {
+            "name": "Tobias Munk",
+            "email": "t.munk@herzogkommunikation.de"
         }
     ],
     "require": {
@@ -15,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "dmstr\\helpers\\": ""
+            "dmstr\\helpers\\": "src/"
         }
     }
 }
