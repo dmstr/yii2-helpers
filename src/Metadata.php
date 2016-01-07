@@ -21,7 +21,7 @@ class Metadata
         return $modules;
     }
 
-    public static function getModuleControllers($module = null)
+    public static function getModuleControllers($module = null, $directory = null)
     {
         if ($module === null) {
             $module = \Yii::$app;
@@ -32,8 +32,9 @@ class Metadata
         }
 
         $controllers = [];
-        if (is_dir($module->getControllerPath())) {
-            foreach (scandir($module->getControllerPath()) AS $i => $name) {
+        $controllerDir = $module->getControllerPath().'/'.$directory;
+        if (is_dir($controllerDir)) {
+            foreach (scandir($controllerDir) AS $i => $name) {
                 if (substr($name, 0, 1) == '.') {
                     continue;
                 }
@@ -42,7 +43,7 @@ class Metadata
                 }
                 #echo $module->getControllerPath();
                 $controller    = \yii\helpers\Inflector::camel2id(str_replace('Controller.php', '', $name));
-                $route         = ($module->id == 'app') ? '' : '/' . $module->id;
+                $route         = ($module->id == 'app') ? '' : '/' . $module->id.'/'.$directory;
                 $c             = Yii::$app->createController($route);
                 $controllers[] = [
                     'name'    => $controller,
