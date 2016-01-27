@@ -30,6 +30,10 @@ class Metadata
         } else {
             $module = \Yii::$app->getModule($module);
         }
+        
+        if($directory !== null && substr($directory, - 1) != '/') {
+            $directory = $directory.'/';
+        }
 
         $controllers = [];
         $controllerDir = $module->getControllerPath().'/'.$directory;
@@ -48,8 +52,8 @@ class Metadata
                 $controllers[] = [
                     'name'    => $controller,
                     'module'  => $module->id,
-                    'route'   => $route . '/' . $controller,
-                    'url'     => Yii::$app->urlManager->createUrl($route . '/' . $controller),
+                    'route'   => $route . $controller,
+                    'url'     => Yii::$app->urlManager->createUrl($route . $controller),
                     'actions' => self::getControllerActions($c[0]),
                 ];
             }
