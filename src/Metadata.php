@@ -41,9 +41,11 @@ class Metadata
                 if (substr($name, -14) != 'Controller.php') {
                     continue;
                 }
-                #echo $module->getControllerPath();
                 $controller    = \yii\helpers\Inflector::camel2id(str_replace('Controller.php', '', $name));
-                $route         = ($module->id == 'app') ? '' : '/' . $module->id.'/'.$directory;
+
+                $route         = ($module->id == 'app') ? '' : '/' . $module->id;
+                $route        .= (!$directory) ? '' : '/'.$directory;
+
                 $c             = Yii::$app->createController($route);
                 $controllers[] = [
                     'name'    => $controller,
