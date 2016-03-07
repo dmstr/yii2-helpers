@@ -26,7 +26,7 @@ to the require section of your `composer.json` file.
 Usage
 -----
 
-Once the extension is installed, simply use it in your code by  :
+### Metadata
 
-```php
-<?= \dmstr\helpers\AutoloadExample::widget(); ?>```
+Retrieve application meta-information, such as module or controller routes.
+
