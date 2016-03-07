@@ -17,8 +17,8 @@ services:
       - mariadb
       - seleniumfirefox
     environment:
-      APP_NAME: dmstr-prototype-module
-      APP_TITLE: 'dmstr/yii2-prototype-module'
+      APP_NAME: dmstr-helpers
+      APP_TITLE: 'dmstr/yii2-helpers'
       YII_ENV: 'prod'
       YII_DEBUG: 'false'
       DB_PORT_3306_TCP_ADDR: mariadb
