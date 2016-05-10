@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 
 /**
- * Provides extended application information
+ * Provides extended application information.
  */
 class Metadata
 {
@@ -18,6 +18,7 @@ class Metadata
         if ($sorted) {
             # ksort($modules);
         }
+
         return $modules;
     }
 
@@ -34,35 +35,36 @@ class Metadata
         $controllers = [];
         $controllerDir = $module->getControllerPath().'/'.$directory;
         if (is_dir($controllerDir)) {
-            foreach (scandir($controllerDir) AS $i => $name) {
+            foreach (scandir($controllerDir) as $i => $name) {
                 if (substr($name, 0, 1) == '.') {
                     continue;
                 }
                 if (substr($name, -14) != 'Controller.php') {
                     continue;
                 }
-                $controller    = \yii\helpers\Inflector::camel2id(str_replace('Controller.php', '', $name));
+                $controller = \yii\helpers\Inflector::camel2id(str_replace('Controller.php', '', $name));
 
-                $route         = ($module->id == 'app') ? '' : '/' . $module->id;
-                $route        .= (!$directory) ? '' : '/'.$directory;
+                $route = ($module->id == 'app') ? '' : '/'.$module->id;
+                $route .= (!$directory) ? '' : '/'.$directory;
 
-                $c             = Yii::$app->createController($route);
+                $c = Yii::$app->createController($route);
                 $controllers[] = [
-                    'name'    => $controller,
-                    'module'  => $module->id,
-                    'route'   => $route . '/' . $controller,
-                    'url'     => Yii::$app->urlManager->createUrl($route . '/' . $controller),
+                    'name' => $controller,
+                    'module' => $module->id,
+                    'route' => $route.'/'.$controller,
+                    'url' => Yii::$app->urlManager->createUrl($route.'/'.$controller),
                     'actions' => self::getControllerActions($c[0]),
                 ];
             }
         }
+
         return $controllers;
     }
 
     public static function getAllControllers()
     {
         $controllers = self::getModuleControllers();
-        foreach (\Yii::$app->getModules() AS $id => $module) {
+        foreach (\Yii::$app->getModules() as $id => $module) {
             #var_dump($module);
             $controllers = ArrayHelper::merge($controllers, self::getModuleControllers($id));
         }
@@ -72,7 +74,7 @@ class Metadata
 
     /**
      * Returns all available actions of the specified controller.
-     * Taken from Yii2 HelpController
+     * Taken from Yii2 HelpController.
      *
      * @param Controller $controller the controller instance
      *
@@ -84,21 +86,22 @@ class Metadata
             return [];
         }
         $actions = [];
-        $prefix = ($controller->module->id === Yii::$app->id) ? '/'.$controller->id . '/' : $controller->module->id .'/'.$controller->id . '/';
-        foreach ($controller->actions() AS $name => $importedActions) {
+        $prefix = ($controller->module->id === Yii::$app->id) ? '/'.$controller->id.'/' :
+            $controller->module->id.'/'.$controller->id.'/';
+        foreach ($controller->actions() as $name => $importedActions) {
             $actions[] = [
-                'name'  => $name,
-                'route' => Yii::$app->urlManager->createUrl($prefix . $name)
+                'name' => $name,
+                'route' => Yii::$app->urlManager->createUrl($prefix.$name),
             ];
         }
         $class = new \ReflectionClass($controller);
         foreach ($class->getMethods() as $method) {
             $name = $method->getName();
             if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions') {
-                $action    = Inflector::camel2id(substr($name, 6), '-', true);
+                $action = Inflector::camel2id(substr($name, 6), '-', true);
                 $actions[] = [
-                    'name'  => $action,
-                    'route' => Yii::$app->urlManager->createUrl($prefix . $action)
+                    'name' => $action,
+                    'route' => Yii::$app->urlManager->createUrl($prefix.$action),
                 ];
             }
         }
