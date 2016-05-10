@@ -80,16 +80,15 @@ class Metadata
      */
     public static function getControllerActions($controller)
     {
-        #$controller = Yii::$app->createController($controller['name']);
         if (!$controller) {
             return [];
         }
-        #if (!is_object($controller)) exit;
         $actions = [];
+        $prefix = ($controller->module->id === Yii::$app->id) ? '/'.$controller->id . '/' : $controller->module->id .'/'.$controller->id . '/';
         foreach ($controller->actions() AS $name => $importedActions) {
             $actions[] = [
                 'name'  => $name,
-                'route' => Yii::$app->urlManager->createUrl($controller->id . '/' . $name)
+                'route' => Yii::$app->urlManager->createUrl($prefix . $name)
             ];
         }
         $class = new \ReflectionClass($controller);
@@ -99,7 +98,7 @@ class Metadata
                 $action    = Inflector::camel2id(substr($name, 6), '-', true);
                 $actions[] = [
                     'name'  => $action,
-                    'route' => Yii::$app->urlManager->createUrl($controller->id . '/' . $action)
+                    'route' => Yii::$app->urlManager->createUrl($prefix . $action)
                 ];
             }
         }
