@@ -16,7 +16,7 @@ class Metadata
     {
         $modules = Yii::$app->getModules();
         if ($sorted) {
-            # ksort($modules);
+            ksort($modules);
         }
 
         return $modules;
