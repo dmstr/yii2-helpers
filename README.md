@@ -1,6 +1,10 @@
 Yii2 Helpers
 ============
 
+[![Latest Stable Version](https://poser.pugx.org/dmstr/yii2-helpers/v/stable.svg)](https://packagist.org/packages/dmstr/yii2-helpers) 
+[![Total Downloads](https://poser.pugx.org/dmstr/yii2-helpers/downloads.svg)](https://packagist.org/packages/dmstr/yii2-helpers)
+[![License](https://poser.pugx.org/dmstr/yii2-helpers/license.svg)](https://packagist.org/packages/dmstr/yii2-helpers)
+
 Yii2 Helpers
 
 Installation
