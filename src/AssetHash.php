@@ -16,7 +16,12 @@ class AssetHash
     static public function byFileTimeAndLess()
     {
         return function ($path) {
-            $files = \yii\helpers\FileHelper::findFiles($path, ['only' => ['*.js', '*.css', '*.less']]);
+            if (is_file($path)) {
+                $files[] = $path;
+            } else {
+                $files = \yii\helpers\FileHelper::findFiles($path, ['only' => ['*.js', '*.css', '*.less']]);
+            }
+
 
             $max = 0;
             foreach ($files as $file) {
