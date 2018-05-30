@@ -42,7 +42,7 @@ class Metadata
                 if (substr($name, -14) != 'Controller.php') {
                     continue;
                 }
-                $controller = \yii\helpers\Inflector::camel2id(str_replace('Controller.php', '', $name));
+                $controller = \yii\helpers\Inflector::camel2id(str_replace('Controller.php', '', $name),'-',true);
 
                 $route = ($module->id == 'app') ? '' : '/'.$module->id;
                 $route .= (!$directory) ? '' : '/'.$directory;
