@@ -30,7 +30,7 @@ class AssetHash
 
             $hash = substr(hash('sha256', $path.$max), 0, 6).
                 '-'.APP_VERSION.'-'.\Yii::$app->cache->get('prototype.less.changed_at');
-            Yii::trace([$path, count($files), Yii::$app->formatter->asRelativeTime($max), $hash], __METHOD__);
+            Yii::trace(['byFileTimeAndLess', $path, count($files), Yii::$app->formatter->asRelativeTime($max), $hash], __METHOD__);
 
             return $hash;
         };
