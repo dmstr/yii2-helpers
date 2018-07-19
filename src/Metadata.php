@@ -22,7 +22,13 @@ class Metadata
         return $modules;
     }
 
-    public static function getModuleControllers($module = null, $directory = null)
+    /**
+     * @param null $module
+     * @param null $directory
+     * @param array $blacklist List of blacklisted controllers (e.g. abstract controllers)
+     * @return array
+     */
+    public static function getModuleControllers($module = null, $directory = null, $blacklist = ['abstract-auth-item'])
     {
         if ($module === null) {
             $module = \Yii::$app;
@@ -42,19 +48,22 @@ class Metadata
                 if (substr($name, -14) != 'Controller.php') {
                     continue;
                 }
-                $controller = \yii\helpers\Inflector::camel2id(str_replace('Controller.php', '', $name),'-',true);
+                $controller = Inflector::camel2id(str_replace('Controller.php', '', $name),'-',true);
 
-                $route = ($module->id == 'app') ? '' : '/'.$module->id;
-                $route .= (!$directory) ? '' : '/'.$directory;
+                if (!\in_array($controller,$blacklist,true)) {
+                    $route = ($module->id == 'app') ? '' : '/'.$module->id;
+                    $route .= (!$directory) ? '' : '/'.$directory;
 
-                $c = Yii::$app->createController($route);
-                $controllers[] = [
-                    'name' => $controller,
-                    'module' => $module->id,
-                    'route' => $route.'/'.$controller,
-                    'url' => Yii::$app->urlManager->createUrl($route.'/'.$controller),
-                    'actions' => self::getControllerActions($c[0]),
-                ];
+                    $c = Yii::$app->createController($route);
+                    $controllers[] = [
+                        'name' => $controller,
+                        'module' => $module->id,
+                        'route' => $route.'/'.$controller,
+                        'url' => Yii::$app->urlManager->createUrl($route.'/'.$controller),
+                        'actions' => self::getControllerActions($c[0]),
+                    ];
+                }
+
             }
         }
 
