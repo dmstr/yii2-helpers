@@ -9,7 +9,6 @@
 
 namespace dmstr\helpers;
 
-use dektrium\user\models\User;
 use yii\console\Controller;
 
 class RbacController extends Controller
@@ -22,10 +21,10 @@ class RbacController extends Controller
      */
     public function actionAssign($roleName, $userName)
     {
-        $userModel = new User();
-        $user = $userModel->finder->findUserByUsername($userName);
+        $userModel = new \Yii::$app->user->identityClass;
+        $user = $userModel::find()->where(['username' => $userName])->one();
         $manager = \Yii::$app->authManager;
-        if (in_array($user->id, $manager->getUserIdsByRole($roleName))) {
+        if (\in_array($user->id, $manager->getUserIdsByRole($roleName),true)) {
             $this->stdout('Role is already assigned to this user'.PHP_EOL);
             $this->stdout(PHP_EOL.PHP_EOL.'Aborted.'.PHP_EOL);
         } else {
@@ -44,8 +43,8 @@ class RbacController extends Controller
      */
     public function actionRevoke($roleName, $userName)
     {
-        $userModel = new User();
-        $user = $userModel->finder->findUserByUsername($userName);
+        $userModel = new \Yii::$app->user->identityClass;
+        $user = $userModel::find()->where(['username' => $userName])->one();
         $manager = \Yii::$app->authManager;
         $role = $manager->getRole($roleName);
         $manager->revoke($role, $user->id);
