@@ -21,6 +21,10 @@ class SettingsAsset
 
         foreach ($bundles as $bundle) {
             $bundle = trim($bundle);
+            // ignore empty lines
+            if ($bundle === '') {
+                continue;
+            }
             if (class_exists($bundle)) {
                 $bundle::register($view);
             } else {
