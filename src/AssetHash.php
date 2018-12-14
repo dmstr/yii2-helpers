@@ -34,9 +34,10 @@ class AssetHash
                 $max = max($max, filemtime($file), filectime($file));
             }
 
-            $hash = substr(hash('sha256', $path.$max), 0, 6).
-                '-'.APP_VERSION.'-c'.\Yii::$app->cache->get('prototype.less.changed_at');
-            Yii::trace(['byFileTimeAndLess', $path, count($files), Yii::$app->formatter->asRelativeTime($max), $hash], __METHOD__);
+            $hash = substr(hash('sha256', $path . $max), 0, 6) .
+                '-' . APP_VERSION . '-c' . \Yii::$app->cache->get('prototype.less.changed_at');
+            Yii::trace(['byFileTimeAndLess', $path, count($files), Yii::$app->formatter->asRelativeTime($max), $hash],
+                       __METHOD__);
 
             return $hash;
         };
@@ -67,12 +68,52 @@ class AssetHash
 
             $modificationHash = substr(hash('sha256', $max), 0, 6);
 
-            $hash = 'dev-v'.APP_VERSION.
-                '-l'.\Yii::$app->cache->get('prototype.less.changed_at').'/'.strtr($path,['/'=>'|']).'-t'.$modificationHash;
-            Yii::trace(['byFileTimeAndLess', $path, count($files), Yii::$app->formatter->asRelativeTime($max), $hash], __METHOD__);
+            $hash = 'dev' .
+                '-v' . APP_VERSION .
+                '-p' . strtr($path, ['/' => '|']) .
+                '-t' . $modificationHash;
+            Yii::trace(['byFileTimeAndLessDevelopment', $path, count($files), Yii::$app->formatter->asRelativeTime($max), $hash],
+                       __METHOD__);
 
             return $hash;
         };
     }
 
+    /**
+     * Returns asset hashes for production
+     *
+     * Checks mtime, ctime by folder
+     *
+     * @return \Closure
+     */
+    static public function byFileTime($obfuscateHash = true)
+    {
+        return function ($path) use ($obfuscateHash) {
+            if (is_file($path)) {
+                $files[] = $path;
+            } else {
+                $files = \yii\helpers\FileHelper::findFiles($path, ['only' => ['*.js', '*.css', '*.less']]);
+            }
+
+
+            $max = 0;
+            foreach ($files as $file) {
+                $max = max($max, filemtime($file), filectime($file));
+            }
+
+            $hash = YII_ENV .
+                '-r' . PROJECT_VERSION .
+                '-v' . APP_VERSION .
+                '-p' . strtr($path, ['/' => '_']) .
+                '-t' . $max;
+            Yii::trace(['byFileTime', $path, count($files), Yii::$app->formatter->asRelativeTime($max), $hash],
+                       __METHOD__);
+
+            if ($obfuscateHash) {
+                return md5($hash);
+            }
+
+            return $hash;
+        };
+    }
 }
