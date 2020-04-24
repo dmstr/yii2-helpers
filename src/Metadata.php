@@ -55,6 +55,10 @@ class Metadata
                     $route .= (!$directory) ? '' : '/'.$directory;
 
                     $c = Yii::$app->createController($route);
+                    if ($c === false) {
+                        continue;
+                    }
+
                     $controllers[] = [
                         'name' => $controller,
                         'module' => $module->id,
