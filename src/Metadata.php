@@ -53,6 +53,7 @@ class Metadata
                 if (!\in_array($controller,$blacklist,true)) {
                     $route = ($module->id == 'app') ? '' : '/'.$module->id;
                     $route .= (!$directory) ? '' : '/'.$directory;
+                    $route .= '/' . $controller;
 
                     $c = Yii::$app->createController($route);
                     if ($c === false) {
@@ -62,8 +63,8 @@ class Metadata
                     $controllers[] = [
                         'name' => $controller,
                         'module' => $module->id,
-                        'route' => $route.'/'.$controller,
-                        'url' => Yii::$app->urlManager->createUrl($route.'/'.$controller),
+                        'route' => $route,
+                        'url' => Yii::$app->urlManager->createUrl($route),
                         'actions' => self::getControllerActions($c[0]),
                     ];
                 }
