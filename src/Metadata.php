@@ -4,6 +4,7 @@ namespace dmstr\helpers;
 
 use Yii;
 use yii\base\Module;
+use yii\di\NotInstantiableException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 
@@ -55,7 +56,14 @@ class Metadata
                     $route .= (!$directory) ? '' : '/'.$directory;
                     $route .= '/' . $controller;
 
-                    $c = Yii::$app->createController($route);
+                    // check if controller not is abstract
+                    try {
+                        $c = Yii::$app->createController($route);
+                    } catch (NotInstantiableException $exception) {
+                        Yii::error($exception->getMessage());
+                        $c = false;
+                    }
+
                     if ($c === false) {
                         continue;
                     }
