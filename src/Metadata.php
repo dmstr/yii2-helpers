@@ -60,7 +60,6 @@ class Metadata
                     try {
                         $c = Yii::$app->createController($route);
                     } catch (NotInstantiableException $exception) {
-                        Yii::error($exception->getMessage());
                         $c = false;
                     }
 
