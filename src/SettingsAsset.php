@@ -16,7 +16,7 @@ class SettingsAsset
     {
         $bundles = explode(
             "\n",
-            \Yii::$app->settings->getOrSet('settingsAssetList', 'app\\assets\\AppAsset', 'app.assets', 'string')
+            (string)\Yii::$app->settings->getOrSet('settingsAssetList', 'app\\assets\\AppAsset', 'app.assets', 'string')
         );
 
         foreach ($bundles as $bundle) {
