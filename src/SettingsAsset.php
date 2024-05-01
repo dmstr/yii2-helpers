@@ -9,26 +9,34 @@
 
 namespace dmstr\helpers;
 
+use yii\web\AssetBundle;
+use Yii;
+use stdClass;
 
-class SettingsAsset
+class SettingsAsset extends AssetBundle
 {
-    static public function register($view)
+
+    /**
+     * @inheritdoc
+    */
+    public function init()
     {
-        $bundles = explode(
-            "\n",
-            (string)\Yii::$app->settings->getOrSet('settingsAssetList', 'app\\assets\\AppAsset', 'app.assets', 'string')
-        );
+        parent::init();
+        $bundlesFromSettings = Yii::$app->settings->get('settingsAssetList', 'app.assets', '');
+        if (!$bundlesFromSettings instanceof stdClass) {
+            $bundlesFromSettings = (string)$bundlesFromSettings;
+        } else {
+            Yii::warning("Asset bundle from settings cannot be json");
+            return;
+        }
+        // Split the list into an array of bundle names and remove whitespace
+        $bundles = array_map('trim', explode(PHP_EOL, $bundlesFromSettings));
 
         foreach ($bundles as $bundle) {
-            $bundle = trim($bundle);
-            // ignore empty lines
-            if ($bundle === '') {
-                continue;
-            }
-            if (class_exists($bundle)) {
-                $bundle::register($view);
+            if (class_exists($bundle) && is_subclass_of($bundle, AssetBundle::class)) {
+                $this->depends[] = $bundle;
             } else {
-                \Yii::warning("Asset bundle '{$bundle}' from settings does not exist");
+                Yii::warning("Asset bundle '$bundle' from settings does not exist");
             }
         }
     }
